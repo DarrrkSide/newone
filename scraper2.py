@@ -331,6 +331,18 @@ def norm_name(name: str) -> str:
     """Loose key for matching the same person across BCA and PRT sheets."""
     return re.sub(r"[^a-z]", "", name.lower())
 
+# PASTE THE NEW FUNCTION HERE
+
+def call_model(client, img, source_label):
+    global PROVIDER
+
+    if PROVIDER == "gemini":
+        return call_gemini(client, img, source_label)
+    elif PROVIDER == "anthropic":
+        return call_anthropic(client, img, source_label)
+    else:
+        raise ValueError(f"Unknown provider: {PROVIDER}")
+
 
 @dataclass
 class Person:
@@ -620,7 +632,10 @@ def main():
         ),
     )
     args = ap.parse_args()
+    args = ap.parse_args()
 
+    global PROVIDER
+    PROVIDER = args.provider
     input_dir = Path(args.input)
     if not input_dir.is_dir():
         sys.exit(f"Input folder not found: {input_dir}")
